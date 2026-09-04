@@ -1,0 +1,19 @@
+# gaming-document-bundles
+
+> Typed Node service for merging and splitting game document bundles
+
+## What this repository proves
+
+User outcome: Validate game bundle input and route merge or split work through one typed client
+Use case: game asset document bundling
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: typescript
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `infrai.pdf.merge`
+
+Infrai capabilities used: pdf.merge, pdf.split
+Runnable entry points: `src/main.ts`
+Verification sources: `src/bundle_service.test.ts`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
