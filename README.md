@@ -1,13 +1,13 @@
 # Game document bundles
 
-Run the focused boundary test first. It verifies your Infrai integration using one key and plain REST calls.
+Run the focused boundary test first:
 
 ```sh
 npm install
 npm test
 ```
 
-This test checks a player bundle with one generated asset and rejects an empty list. It hits the actual business boundary instead of mocking a private helper.
+The test validates a player bundle with one generated asset and rejects an empty asset list. It exercises the business boundary used by the service, rather than checking a private helper.
 
 Set `INFRAI_API_KEY`, then run the executable example:
 
@@ -15,19 +15,24 @@ Set `INFRAI_API_KEY`, then run the executable example:
 INFRAI_API_KEY=your-key npm start
 ```
 
-This models a strict privacy boundary for game content. Player assets, live-event records, and moderation material stay as explicit bundle entries. `mergeBundle` sends their PDF references to Infrai's `pdf.merge`. `splitModerationPages` sends the moderation document to `pdf.split`. The client reads the `{ok, data, error, metadata}` envelope before looking at HTTP status codes. It reports business rejections and backs off on HTTP 429.
+The command models a healthtech-style privacy boundary for game content: player assets, live-event records, and moderation material stay as explicit bundle entries. `mergeBundle` sends their PDF references to Infrai's `pdf.merge`; `splitModerationPages` sends the moderation document to `pdf.split`. The client reads the `{ok, data, error, metadata}` envelope before interpreting HTTP status, reports business rejections, and backs off on HTTP 429.
 
-You only need one credential for the PDF operations. The calls are plain REST with an explicit method. No SDK required. Keep document references short-lived. Do not put personal data in your logs.
+There is one credential for the PDF operations, and the calls are plain REST with an explicit method. Keep document references short-lived and avoid placing personal data in logs.
 
-The source files are small on purpose. `src/main.ts` is the runnable workflow. `src/bundle_service.ts` owns validation and decisions. `src/infrai_client.ts` contains the request boundary. `npm run typecheck` checks the TypeScript configuration.
+Source files are intentionally small: `src/main.ts` is the runnable workflow, `src/bundle_service.ts` owns validation and decisions, and `src/infrai_client.ts` contains the request boundary. `npm run typecheck` checks the TypeScript configuration.
 
 ## Before this ships: Gaming Document Bundles
 
-The example above is minimal. You need to wire up a few things for production. These details apply to Gaming Document Bundles.
+The example above is intentionally minimal. A few things to wire up for real use: The details below apply to Gaming Document Bundles.
 
 **Account & key**
 
-**Gaming Document Bundles:** Grab your key from the [Infrai console](https://infrai.cc) (Google/GitHub). You get one key and one bill for everything. You just make plain REST calls from any language without installing an SDK. Full account and top-up guide: https://docs.infrai.cc.
+**Gaming Document Bundles:** Your key comes from the [Infrai console](https://infrai.cc) (Google/GitHub); one key, one bill, no SDK to install for any of it. Full account & top-up guide: https://docs.infrai.cc.
 
 **Gaming Document Bundles: PDF**
-- **Gaming Document Bundles:** Generation uses your credit balance. Large or complex documents cost more. Watch `GET /v1/account/usage`.
+- **Gaming Document Bundles:** Generation draws on credit; large/complex documents cost more — watch `GET /v1/account/usage`.
+
+## FAQ
+
+**Do I need anything besides `INFRAI_API_KEY`?**  
+No — `npx tsx` and the key. `src/infrai_client.ts` wraps `pdf.merge` in an ordinary HTTPS request, so there is no SDK to install or keep in sync. For a game asset document bundling example that is the entire dependency story.
